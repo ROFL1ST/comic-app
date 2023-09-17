@@ -1,9 +1,16 @@
-// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_constructors, curly_braces_in_flow_control_structures, prefer_const_literals_to_create_immutables
 
+import 'dart:developer';
+
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:comic_app/common/colors.dart';
 import 'package:comic_app/helpers/cache_manager.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:get/get.dart';
+import 'package:iconsax/iconsax.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 final List<String> imgList = [
@@ -16,7 +23,8 @@ final List<String> imgList = [
 ];
 
 class Carousel extends StatefulWidget {
-  const Carousel({super.key});
+  final recommend;
+  const Carousel({super.key, required this.recommend});
 
   @override
   State<Carousel> createState() => _CarouselState();
@@ -29,64 +37,198 @@ class _CarouselState extends State<Carousel> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    return Column(
+    return FutureBuilder(
+        future: widget.recommend,
+        builder: (context, AsyncSnapshot snapshot) {
+          if (snapshot.connectionState != ConnectionState.done)
+            return carouselLoading(size);
+          if (snapshot.hasError) return Text("Error");
+          if (snapshot.hasData) return component(size, snapshot.data.data);
+          return Text("Kosong");
+        });
+  }
+
+  Widget component(size, data) {
+    log("${data}");
+
+    return Stack(
       children: [
-        CarouselSlider.builder(
-          carouselController: _controller,
-          itemCount: imgList.length,
-          itemBuilder: (BuildContext context, index, realIndex) {
-            return cardCarousel(size);
-          },
-          options: CarouselOptions(
-              height: size.height * 0.23,
-              autoPlay: true,
-              initialPage: 0,
-              enlargeCenterPage: true,
-              viewportFraction: 0.92,
-              onPageChanged: (index, reason) {
-                setState(() {
-                  _current = index;
-                });
-              }),
+        listBuilder(size, data),
+        Positioned(
+          bottom: 0,
+          right: 0,
+          child: Padding(
+            padding: const EdgeInsets.all(5.0),
+            child: Padding(
+              padding: const EdgeInsets.all(9.0),
+              child: Text(
+                '${_current + 1}/${imgList.length}',
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+          ),
         ),
-        SizedBox(
-          height: size.height * 0.02,
+        SafeArea(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(5.0),
+                child: CupertinoButton(
+                  onPressed: () {
+                    Get.back();
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                        color: Colors.black.withOpacity(0.7),
+                        borderRadius: BorderRadius.circular(25)),
+                    child: Padding(
+                      padding: const EdgeInsets.all(9.0),
+                      child: Icon(
+                        Iconsax.search_normal,
+                        color: Colors.white,
+                        size: size.width * 0.05,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
-        buildIndicator()
       ],
     );
   }
 
-  Widget cardCarousel(size) {
-    return InkWell(
-      onTap: () {},
-      child: Container(
-        height: size.height,
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            image: DecorationImage(
-                image: CachedNetworkImageProvider(
-                  "https://komikcast.vip/wp-content/uploads/2023/01/lft236234423-e1674399618951.jpg",
-                  cacheManager: CustomCacheManager.instance,
-                ),
-                fit: BoxFit.cover,
-                alignment: Alignment.center,
-                opacity: 0.8)),
+  Widget listBuilder(size, data) {
+    return Container(
+      decoration: BoxDecoration(color: Colors.black.withOpacity(0.5)),
+      child: CarouselSlider.builder(
+        carouselController: _controller,
+        itemCount: imgList.length,
+        itemBuilder: (BuildContext context, index, realIndex) {
+          return cardCarousel(size, data[index]);
+        },
+        options: CarouselOptions(
+          height: size.height * 0.45,
+          autoPlay: true,
+          initialPage: 0,
+          // enlargeCenterPage: true,
+          viewportFraction: 1,
+          onPageChanged: (index, reason) {
+            setState(
+              () {
+                _current = index;
+              },
+            );
+          },
+        ),
       ),
     );
   }
 
-  Widget buildIndicator() => AnimatedSmoothIndicator(
-        onDotClicked: animateToSlide,
-        effect: ExpandingDotsEffect(
-          dotWidth: 12,
-          activeDotColor: Colors.blue,
-          dotHeight: 12,
-          strokeWidth: 5
+  Widget cardCarousel(size, data) {
+    var rate = double.parse(data.rating);
+    double roundedNumber = double.parse(rate.toStringAsFixed(1));
+    return InkWell(
+      onTap: () {},
+      child: Container(
+        height: size.height,
+        width: size.width,
+        decoration: BoxDecoration(
+          // borderRadius: BorderRadius.circular(10),
+          image: DecorationImage(
+            image: CachedNetworkImageProvider(
+              data.thumbnail,
+              cacheManager: CustomCacheManager.instance,
+            ),
+            fit: BoxFit.cover,
+            alignment: Alignment.center,
+          ),
         ),
-        activeIndex: _current,
-        count: imgList.length,
-      );
+        child: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: FractionalOffset.topCenter,
+              end: FractionalOffset.bottomCenter,
+              colors: [
+                Colors.transparent,
+                Colors.black.withOpacity(0.5),
+              ],
+            ),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(bottom: 10, left: 10),
+                child: Row(
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(3),
+                        color: cardBgPrimary,
+                      ),
+                      child: Padding(
+                        padding: EdgeInsets.all(3),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Icon(
+                              Icons.star_rounded,
+                              color: TextPrimary,
+                              size: size.width / 30,
+                            ),
+                            SizedBox(
+                              width: size.width * 0.01,
+                            ),
+                            AutoSizeText(
+                              roundedNumber.toString(),
+                              // maxFontSize: ,
 
-  void animateToSlide(int index) => _controller.animateToPage(index);
+                              style: TextStyle(
+                                  color: TextPrimary,
+                                  fontSize: 8,
+                                  fontWeight: FontWeight.bold),
+                            )
+                          ],
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 15, left: 10),
+                child: SizedBox(
+                  width: size.width / 1.4,
+                  child: AutoSizeText(
+                    data.title,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20,
+                        color: Colors.white),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget carouselLoading(size) {
+    return Container(
+      height: size.height * 0.45,
+      decoration: BoxDecoration(
+          // borderRadius: BorderRadius.circular(10),
+          color: cardBg),
+    );
+  }
 }
