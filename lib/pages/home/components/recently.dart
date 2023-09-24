@@ -6,6 +6,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:comic_app/common/colors.dart';
 import 'package:comic_app/helpers/cache_manager.dart';
+import 'package:comic_app/pages/detail/detail.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
@@ -81,6 +82,9 @@ class _RecentlyState extends State<Recently> {
     var rate = double.parse(data.rating);
     double roundedNumber = double.parse(rate.toStringAsFixed(1));
     return InkWell(
+      onTap: () {
+          Get.to(() => DetailPage(images: data.thumbnail,));
+      },
       child: ClipRRect(
           borderRadius: BorderRadius.circular(15),
           child: Container(

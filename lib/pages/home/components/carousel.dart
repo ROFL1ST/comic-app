@@ -6,6 +6,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:comic_app/common/colors.dart';
 import 'package:comic_app/helpers/cache_manager.dart';
+import 'package:comic_app/pages/detail/detail.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -49,8 +50,6 @@ class _CarouselState extends State<Carousel> {
   }
 
   Widget component(size, data) {
-    log("${data}");
-
     return Stack(
       children: [
         listBuilder(size, data),
@@ -75,9 +74,7 @@ class _CarouselState extends State<Carousel> {
               Padding(
                 padding: const EdgeInsets.all(5.0),
                 child: CupertinoButton(
-                  onPressed: () {
-                    Get.back();
-                  },
+                  onPressed: () {},
                   child: Container(
                     decoration: BoxDecoration(
                         color: Colors.black.withOpacity(0.7),
@@ -131,7 +128,13 @@ class _CarouselState extends State<Carousel> {
     var rate = double.parse(data.rating);
     double roundedNumber = double.parse(rate.toStringAsFixed(1));
     return InkWell(
-      onTap: () {},
+      onTap: () {
+        Get.to(
+          () => DetailPage(
+            images: data.thumbnail,
+          ),
+        );
+      },
       child: Container(
         height: size.height,
         width: size.width,

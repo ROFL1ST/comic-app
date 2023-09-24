@@ -5,7 +5,7 @@ import 'dart:developer';
 import 'package:comic_app/api/apiServices.dart';
 import 'package:comic_app/common/colors.dart';
 import 'package:comic_app/pages/home/components/carousel.dart';
-import 'package:comic_app/pages/home/components/popular.dart';
+import 'package:comic_app/pages/home/components/popularSec.dart';
 import 'package:comic_app/pages/home/components/recently.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -21,11 +21,14 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   late Future recommend;
   late Future recent;
+  late Future popular;
 
   @override
   void initState() {
     recommend = ApiServices().recommendation();
     recent = ApiServices().recent(1);
+    popular = ApiServices().popular();
+
     super.initState();
   }
 
@@ -61,7 +64,10 @@ class _HomePageState extends State<HomePage> {
                       SizedBox(
                         height: size.height * 0.02,
                       ),
-                      Popular(),
+                      Padding(
+                        padding: const EdgeInsets.only(right: 15.0, bottom: 10),
+                        child: PopularSec(popular: popular),
+                      ),
                     ],
                   ),
                 ),
