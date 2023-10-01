@@ -5,7 +5,7 @@ const kPrimaryLightColor = Color(0xFFC5D5FF);
 const kBoxPrimaryColor = Color(0xFFE7E7E7);
 const kPrimaryIconColor = Color(0xFF292D32);
 const kSubtitleColor = Color(0xFF777777);
-Color cardBg = Color(0xFFD9D9D9);
+const cardBg = Color(0xFFD9D9D9);
 const cardBgPrimary = Color(0xFF9FBADB);
 const TextPrimary =  Color(0xFF2E6FBE);
 
