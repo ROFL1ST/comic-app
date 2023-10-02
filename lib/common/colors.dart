@@ -1,16 +1,14 @@
 import 'package:flutter/material.dart';
 
-
 const kPrimaryLightColor = Color(0xFFC5D5FF);
 const kBoxPrimaryColor = Color(0xFFE7E7E7);
 const kPrimaryIconColor = Color(0xFF292D32);
 const kSubtitleColor = Color(0xFF777777);
 const cardBg = Color(0xFFD9D9D9);
 const cardBgPrimary = Color(0xFF9FBADB);
-const TextPrimary =  Color(0xFF2E6FBE);
+const TextPrimary = Color(0xFF2E6FBE);
 
 const kListSubtitleColor = Color(0xFF494949);
-
 
 const kTitleBannerStyle = TextStyle(
   fontSize: 16,
