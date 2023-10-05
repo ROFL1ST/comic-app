@@ -68,16 +68,12 @@ class _PopularSecState extends State<PopularSec> {
 
   Widget card(data, size, index) {
     log("${data}");
-
+    List<String> stringList = data.genre.split(',');
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: Container(
+      child: SizedBox(
         width: size.width,
         height: size.height * 0.214,
-        decoration: BoxDecoration(
-          color: cardBgPrimary,
-          borderRadius: BorderRadius.circular(10),
-        ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -102,8 +98,29 @@ class _PopularSecState extends State<PopularSec> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.center,
+                    // mainAxisAlignment: MainAxisAlignment.center,
                     children: [
+                      SizedBox(
+                        width: size.width * 0.55,
+                        child: AutoSizeText(
+                          stringList[0],
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          minFontSize: 15,
+                          style: kListTitleStyle.copyWith(
+                              color: stringList[0] == "Drama"
+                                  ? drama
+                                  : stringList[0] == "Action"
+                                      ? action
+                                      : stringList[0] == "Adventure"
+                                          ? Adventure
+                                          : stringList[0] == "Romance"
+                                              ? romance
+                                              : stringList[0] == "Fantasy"
+                                                  ? fantasy
+                                                  : null),
+                        ),
+                      ),
                       SizedBox(
                         width: size.width * 0.55,
                         child: AutoSizeText(
@@ -111,7 +128,7 @@ class _PopularSecState extends State<PopularSec> {
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                           minFontSize: 18,
-                          style: kListTitleStyle.copyWith(color: Colors.white),
+                          style: kListTitleStyle,
                         ),
                       ),
                       SizedBox(
@@ -123,7 +140,9 @@ class _PopularSecState extends State<PopularSec> {
                             Icons.star_rounded,
                             color: Color(0xFFFFD248),
                           ),
-                          SizedBox(width: size.width * 0.01,),
+                          SizedBox(
+                            width: size.width * 0.01,
+                          ),
                           // rating tidak ada
                         ],
                       )

@@ -1,11 +1,14 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'dart:developer';
+
 import 'package:comic_app/common/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
 class TitleDetail extends StatefulWidget {
-  const TitleDetail({super.key});
-
+  const TitleDetail({super.key, required this.data});
+  final data;
   @override
   State<TitleDetail> createState() => _TitleDetailState();
 }
@@ -16,13 +19,13 @@ class _TitleDetailState extends State<TitleDetail> {
     Size size = MediaQuery.of(context).size;
 
     return SizedBox(
-      width: size.width / 1.4,
+      // width: size.width / 1.4,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            "SAO : ALICIZATION",
+            widget.data.title,
             style: kTitleTextStyle.copyWith(
               fontSize: 24,
             ),
@@ -30,22 +33,19 @@ class _TitleDetailState extends State<TitleDetail> {
           SizedBox(
             height: size.height * 0.01,
           ),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.start,
+          Wrap(
+            alignment: WrapAlignment.start,
+            crossAxisAlignment: WrapCrossAlignment.center,
+
+            spacing: 8.0, // Horizontal spacing between children
+            runSpacing: 8.0, // Vertical spacing between lines
             children: [
               Text(
-                "Reki Kawahara",
+                widget.data.author,
                 style: kSubtitleTextStyle,
               ),
-              VerticalDivider(
-                width: 10,
-                color: Colors.black,
-                thickness: 1,
-                indent: 1,
-                endIndent: 1,
-              ),
-              Row(
+              Wrap(
+                crossAxisAlignment: WrapCrossAlignment.center,
                 children: [
                   Icon(
                     Icons.star_rounded,
@@ -61,35 +61,31 @@ class _TitleDetailState extends State<TitleDetail> {
                   )
                 ],
               ),
-              VerticalDivider(
-                width: 10,
-                color: Colors.black,
-                thickness: 1,
-                indent: 1,
-                endIndent: 1,
-              ),
-              Text(
-                "Last Chapter : 10",
-                style: kSubtitleTextStyle,
-              ),
             ],
           ),
           SizedBox(
             height: size.height * 0.01,
           ),
-          Row(
+          Wrap(
+            spacing: 8.0, // Horizontal spacing between children
+            runSpacing: 8.0, // Vertical spacing between lines
             children: [
-              Container(
-                decoration: BoxDecoration(
-                    color: TextPrimary, borderRadius: BorderRadius.circular(8)),
-                child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 13, vertical: 8),
-                  child: Text(
-                    "Adventure",
-                    style: kListSubtitle.copyWith(color: Colors.white),
+              ...widget.data.genre.map((data) {
+                log("$data");
+                return Container(
+                  // margin: EdgeInsets.only(right: 8, bottom: 8),
+                  decoration: BoxDecoration(
+                      color: TextPrimary,
+                      borderRadius: BorderRadius.circular(8)),
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 13, vertical: 8),
+                    child: Text(
+                      data.title,
+                      style: kListSubtitle.copyWith(color: Colors.white),
+                    ),
                   ),
-                ),
-              ),
+                );
+              }).toList()
             ],
           )
         ],

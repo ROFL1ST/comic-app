@@ -131,6 +131,7 @@ class _CarouselState extends State<Carousel> {
       onTap: () {
         Get.to(
           () => DetailPage(
+            id: data.href,
             images: data.thumbnail,
           ),
         );

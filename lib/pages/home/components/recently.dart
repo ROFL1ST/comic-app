@@ -83,7 +83,12 @@ class _RecentlyState extends State<Recently> {
     double roundedNumber = double.parse(rate.toStringAsFixed(1));
     return InkWell(
       onTap: () {
-          Get.to(() => DetailPage(images: data.thumbnail,));
+        Get.to(
+          () => DetailPage(
+            images: data.thumbnail,
+            id: data.href,
+          ),
+        );
       },
       child: ClipRRect(
           borderRadius: BorderRadius.circular(15),
@@ -131,7 +136,8 @@ class _RecentlyState extends State<Recently> {
                               "UP",
                               style: TextStyle(
                                   fontWeight: FontWeight.w700,
-                                  color: Colors.white, fontSize: 13),
+                                  color: Colors.white,
+                                  fontSize: 13),
                             ),
                           ),
                         )

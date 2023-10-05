@@ -1,9 +1,13 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, sort_child_properties_last
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, sort_child_properties_last, curly_braces_in_flow_control_structures, non_constant_identifier_names
+
+import 'dart:developer';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:comic_app/api/apiServices.dart';
 import 'package:comic_app/common/colors.dart';
 import 'package:comic_app/helpers/cache_manager.dart';
+import 'package:comic_app/pages/detail/components/desc.dart';
 import 'package:comic_app/pages/detail/components/title.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -12,27 +16,42 @@ import 'package:iconsax/iconsax.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class DetailPage extends StatefulWidget {
+  final id;
   final images;
-  const DetailPage({super.key, required this.images});
+  const DetailPage({
+    super.key,
+    required this.images,
+    required this.id,
+  });
 
   @override
   State<DetailPage> createState() => _DetailPageState();
 }
 
 class _DetailPageState extends State<DetailPage> {
+  late Future detail;
+
   final PageController _pageController = PageController();
 
   List<bool> _isSelected = [true, false];
   final ScrollController _scrollController = ScrollController();
   @override
+  void initState() {
+    // TODO: implement initState
+    detail = ApiServices().detail(widget.id);
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+    log("${detail} hai \n ${widget.id}");
 
     return Scaffold(
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: FixedBottomButton(size),
       body: SingleChildScrollView(
-        physics: NeverScrollableScrollPhysics(),
+        // physics: NeverScrollableScrollPhysics(),
         child: Stack(
           children: [
             Container(
@@ -105,151 +124,130 @@ class _DetailPageState extends State<DetailPage> {
             ),
             Padding(
               padding: EdgeInsets.only(
-                top: size.height * 0.41,
+                top: size.height * 0.38,
                 left: 27,
                 right: 27,
-                bottom: 20,
+                bottom: 90,
               ),
-              child: Center(
-                child: Container(
-                  decoration: BoxDecoration(
-                      // color: Colors.red, // hapus nanti
-                      ),
-                  width: size.width,
-                  child: Column(
-                    children: [
-                      Container(
-                        decoration: BoxDecoration(
-                          color: cardBgPrimary,
-                          borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: AnimatedContainer(
-                            duration: Duration(milliseconds: 300),
-                            child: ToggleButtons(
-                              children: <Widget>[
-                                SizedBox(
-                                  width: size.width / 2.46,
-                                  child: Center(
-                                    child: Text(
-                                      'Information',
-                                      style: kSubtitleTextStyle.copyWith(
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: size.width / 2.46,
-                                  child: Center(
-                                      child: Text(
-                                    'Chapter',
-                                    style: kSubtitleTextStyle.copyWith(
-                                      color: Colors.white,
-                                    ),
-                                  )),
-                                ),
-                              ],
-                              onPressed: (int newIndex) {
-                                setState(() {
-                                  // Update the selected state
-                                  for (int index = 0;
-                                      index < _isSelected.length;
-                                      index++) {
-                                    if (index == newIndex) {
-                                      _isSelected[index] = true;
-                                    } else {
-                                      _isSelected[index] = false;
-                                    }
-                                  }
+              child: Container(
+                decoration: BoxDecoration(
+                    // color: Colors.red, // hapus nanti
+                    ),
+                width: size.width,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Container(
+                    //   decoration: BoxDecoration(
+                    //     color: cardBgPrimary,
+                    //     borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                    //   ),
+                    //   child: Padding(
+                    //     padding: const EdgeInsets.all(8.0),
+                    //     child: AnimatedContainer(
+                    //       duration: Duration(milliseconds: 300),
+                    //       child: ToggleButtons(
+                    //         children: <Widget>[
+                    //           SizedBox(
+                    //             width: size.width / 2.46,
+                    //             child: Center(
+                    //               child: Text(
+                    //                 'Information',
+                    //                 style: kSubtitleTextStyle.copyWith(
+                    //                   color: Colors.white,
+                    //                 ),
+                    //               ),
+                    //             ),
+                    //           ),
+                    //           SizedBox(
+                    //             width: size.width / 2.46,
+                    //             child: Center(
+                    //                 child: Text(
+                    //               'Chapter',
+                    //               style: kSubtitleTextStyle.copyWith(
+                    //                 color: Colors.white,
+                    //               ),
+                    //             )),
+                    //           ),
+                    //         ],
+                    //         onPressed: (int newIndex) {
+                    //           setState(() {
+                    //             // Update the selected state
+                    //             for (int index = 0;
+                    //                 index < _isSelected.length;
+                    //                 index++) {
+                    //               if (index == newIndex) {
+                    //                 _isSelected[index] = true;
+                    //               } else {
+                    //                 _isSelected[index] = false;
+                    //               }
+                    //             }
 
-                                  // Scroll to the selected page
-                                  _pageController.animateToPage(
-                                    newIndex,
-                                    duration: Duration(milliseconds: 300),
-                                    curve: Curves.easeInOut,
-                                  );
-                                });
-                              },
-                              isSelected: _isSelected,
-                              selectedBorderColor: TextPrimary,
-                              borderRadius: BorderRadius.circular(8),
-                              selectedColor: Colors.white,
-                              color: Colors.white,
-                              fillColor: TextPrimary,
-                              highlightColor: TextPrimary,
-                              borderColor: Colors.transparent,
-                              hoverColor: TextPrimary,
-                              focusColor: TextPrimary,
-                              // disabledBorderColor: Colors.transparent,
-                            ),
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        width: size.width,
-                        height: size.height / 2.35,
-                        child: PageView(
-                          controller: _pageController,
-                          physics: NeverScrollableScrollPhysics(),
-                          children: [
-                            // page information
-                            CustomScrollbar(
-                              child: SingleChildScrollView(
-                                physics: AlwaysScrollableScrollPhysics(),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    SizedBox(
-                                      height: size.height * 0.02,
-                                    ),
-                                    // top
-                                    TitleDetail(),
-                                    // top
-                                    SizedBox(
-                                      height: size.height * 0.03,
-                                    ),
-                                    // description
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          "Description",
-                                          style: kTitleTextStyle.copyWith(
-                                            fontSize: 22,
-                                          ),
-                                        ),
-                                        SizedBox(
-                                          height: size.height * 0.01,
-                                        ),
-                                        SizedBox(
-                                          width: size.width / 1.3,
-                                          child: AutoSizeText(
-                                            "The Soul Translator is a state-of-the-art full-dive interface which interacts with the user's Fluctlightthe technological equivalent of a human soul and fundamentally differs from the orthodox method of sending signals to the brain. The private institute Rath aims to perfect their creation by enlisting the aid of Sword Art Online survivor Kazuto Kirigaya. He works there as a part-time employee to test the system's capabilities in the Underworld: the fantastical realm generated by the Soul Translator. As per the confidentiality contract, any memories created by the machine in the virtual world are wiped upon returning to the real world. Kazuto can only vaguely recall a single name, Alice, which provokes a sense of unease when mentioned in reality.",
-                                            style: kSubtitleDetailStyle,
-                                          ),
-                                        )
-                                      ],
-                                    )
-                                    // description
-                                  ],
-                                ),
-                              ),
-                            ),
-                            // page information
-                            // page chapter
-                            Center(
-                              child: Text("DATA2"),
-                            ),
-                            // page chapter
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
+                    //             // Scroll to the selected page
+                    //             _pageController.animateToPage(
+                    //               newIndex,
+                    //               duration: Duration(milliseconds: 300),
+                    //               curve: Curves.easeInOut,
+                    //             );
+                    //           });
+                    //         },
+                    //         isSelected: _isSelected,
+                    //         selectedBorderColor: TextPrimary,
+                    //         borderRadius: BorderRadius.circular(8),
+                    //         selectedColor: Colors.white,
+                    //         color: Colors.white,
+                    //         fillColor: TextPrimary,
+                    //         highlightColor: TextPrimary,
+                    //         borderColor: Colors.transparent,
+                    //         hoverColor: TextPrimary,
+                    //         focusColor: TextPrimary,
+                    //         // disabledBorderColor: Colors.transparent,
+                    //       ),
+                    //     ),
+                    //   ),
+                    // ),
+                    // SingleChildScrollView(
+                    //   child: SizedBox(
+                    //     width: size.width,
+                    //     height: size.height / 1.2,
+                    //     child: FutureBuilder(
+                    //       future: detail,
+                    //       builder: (context, AsyncSnapshot snapshot) {
+                    //         if (snapshot.connectionState !=
+                    //             ConnectionState.done) return Text("Loading");
+                    //         if (snapshot.hasError) return Text("Error");
+                    //         if (snapshot.hasData)
+                    //           return PageView(
+                    //             controller: _pageController,
+                    //             physics: NeverScrollableScrollPhysics(),
+                    //             children: [
+                    //               // page information
+                    //               PageOne(size: size, data: snapshot.data.data),
+                    //               // page information
+                    //               // page chapter
+                    //               PageSecond(size: size, data: snapshot.data.data)
+                    //               // page chapter
+                    //             ],
+                    //           );
+                    //         return Text("Kosong");
+                    //       },
+                    //     ),
+                    //   ),
+                    // ),
+
+                    FutureBuilder(
+                      future: detail,
+                      builder: (context, AsyncSnapshot snapshot) {
+                        if (snapshot.connectionState != ConnectionState.done)
+                          return Text("Loading");
+                        if (snapshot.hasError) return Text("Error");
+                        if (snapshot.hasData)
+                          return desc(size: size, data: snapshot.data.data);
+                        return Text("Kosong");
+                      },
+                    ),
+                  ],
                 ),
               ),
             )
@@ -265,14 +263,15 @@ class _DetailPageState extends State<DetailPage> {
         boxShadow: [
           BoxShadow(
             color: Colors.white,
-            spreadRadius: 1,
+            spreadRadius: 10  ,
             blurRadius: 7,
-            offset: Offset(0, 1),
+            offset: Offset(0, 10),
           ),
         ],
       ),
-      // decoration: BoxDecoration(color: Colors.white),
+
       width: double.infinity, // Make the button take up the full width
+
       padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 14),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -301,6 +300,7 @@ class _DetailPageState extends State<DetailPage> {
                       MaterialStatePropertyAll<Color>(TextPrimary)),
               onPressed: () {
                 // Add your button's functionality here
+
                 print('Button3 Pressed');
               },
               child: Text("Read Now"),

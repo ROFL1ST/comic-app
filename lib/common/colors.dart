@@ -8,6 +8,13 @@ const cardBg = Color(0xFFD9D9D9);
 const cardBgPrimary = Color(0xFF9FBADB);
 const TextPrimary = Color(0xFF2E6FBE);
 
+const drama = Color(0xFFCC782A);
+const action = Color(0xFFC32D2D);
+const romance = Color(0xFFAA5AA9);
+const fantasy = Color(0xFFE3D33C);
+const Adventure = Color(0xFF3CE357);
+
+
 const kListSubtitleColor = Color(0xFF494949);
 
 const kTitleBannerStyle = TextStyle(
