@@ -85,6 +85,7 @@ class _RecentlyState extends State<Recently> {
       onTap: () {
         Get.to(
           () => DetailPage(
+            title: data.title,
             images: data.thumbnail,
             id: data.href,
           ),

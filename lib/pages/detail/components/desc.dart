@@ -51,7 +51,9 @@ class _descState extends State<desc> {
             SizedBox(
               width: widget.size.width / 1.3,
               child: AutoSizeText(
-                widget.data.description,
+                widget.data.description == ""
+                    ? "No Description"
+                    : widget.data.description,
                 style: kSubtitleDetailStyle,
               ),
             )

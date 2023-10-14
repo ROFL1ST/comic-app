@@ -7,6 +7,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:comic_app/api/apiServices.dart';
 import 'package:comic_app/common/colors.dart';
 import 'package:comic_app/helpers/cache_manager.dart';
+import 'package:comic_app/pages/detail/chapterList/chapter.dart';
 import 'package:comic_app/pages/detail/components/desc.dart';
 import 'package:comic_app/pages/detail/components/title.dart';
 import 'package:flutter/cupertino.dart';
@@ -18,10 +19,12 @@ import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 class DetailPage extends StatefulWidget {
   final id;
   final images;
+  final title;
   const DetailPage({
     super.key,
     required this.images,
     required this.id,
+    required this.title,
   });
 
   @override
@@ -30,11 +33,6 @@ class DetailPage extends StatefulWidget {
 
 class _DetailPageState extends State<DetailPage> {
   late Future detail;
-
-  final PageController _pageController = PageController();
-
-  List<bool> _isSelected = [true, false];
-  final ScrollController _scrollController = ScrollController();
   @override
   void initState() {
     // TODO: implement initState
@@ -49,7 +47,7 @@ class _DetailPageState extends State<DetailPage> {
 
     return Scaffold(
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      floatingActionButton: FixedBottomButton(size),
+      floatingActionButton: FixedBottomButton(size, widget.id),
       body: SingleChildScrollView(
         // physics: NeverScrollableScrollPhysics(),
         child: Stack(
@@ -242,9 +240,11 @@ class _DetailPageState extends State<DetailPage> {
                         if (snapshot.connectionState != ConnectionState.done)
                           return Text("Loading");
                         if (snapshot.hasError) return Text("Error");
-                        if (snapshot.hasData)
+                        if (snapshot.hasData) {
                           return desc(size: size, data: snapshot.data.data);
-                        return Text("Kosong");
+                        } else {
+                          return Text("Kosong");
+                        }
                       },
                     ),
                   ],
@@ -257,13 +257,13 @@ class _DetailPageState extends State<DetailPage> {
     );
   }
 
-  Widget FixedBottomButton(size) {
+  Widget FixedBottomButton(size, id) {
     return Container(
       decoration: BoxDecoration(
         boxShadow: [
           BoxShadow(
             color: Colors.white,
-            spreadRadius: 10  ,
+            spreadRadius: 10,
             blurRadius: 7,
             offset: Offset(0, 10),
           ),
@@ -282,8 +282,8 @@ class _DetailPageState extends State<DetailPage> {
             width: size.width * 0.13,
             child: ElevatedButton(
               style: ButtonStyle(
-                  backgroundColor:
-                      MaterialStatePropertyAll<Color>(TextPrimary)),
+                backgroundColor: MaterialStatePropertyAll<Color>(TextPrimary),
+              ),
               onPressed: () {
                 // Add your button's functionality here
                 print('Button Pressed');
@@ -296,10 +296,15 @@ class _DetailPageState extends State<DetailPage> {
             width: size.width * 0.76,
             child: ElevatedButton(
               style: ButtonStyle(
-                  backgroundColor:
-                      MaterialStatePropertyAll<Color>(TextPrimary)),
+                backgroundColor: MaterialStatePropertyAll<Color>(TextPrimary),
+              ),
               onPressed: () {
                 // Add your button's functionality here
+                Get.to(() => ChapterPage(
+                      id: id,
+                      image: widget.images,
+                      title: widget.title,
+                    ));
 
                 print('Button3 Pressed');
               },
@@ -308,55 +313,6 @@ class _DetailPageState extends State<DetailPage> {
           ),
         ],
       ),
-    );
-  }
-}
-
-class CustomScrollbar extends StatefulWidget {
-  final Widget child;
-
-  CustomScrollbar({required this.child});
-
-  @override
-  _CustomScrollbarState createState() => _CustomScrollbarState();
-}
-
-class _CustomScrollbarState extends State<CustomScrollbar> {
-  double scrollPosition = 0.0;
-
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        widget.child,
-        Positioned(
-          right: 0,
-          top: 0,
-          bottom: 0,
-          child: Container(
-            width: 8.0,
-            color: Colors.grey,
-            child: GestureDetector(
-              onVerticalDragUpdate: (details) {
-                setState(() {
-                  scrollPosition += details.delta.dy;
-                  if (scrollPosition < 0) {
-                    scrollPosition = 0;
-                  } else if (scrollPosition > 1) {
-                    scrollPosition = 1;
-                  }
-                });
-              },
-              child: Container(
-                margin: EdgeInsets.only(top: scrollPosition * 200.0),
-                width: 8.0,
-                height: 50.0,
-                color: Colors.blue,
-              ),
-            ),
-          ),
-        ),
-      ],
     );
   }
 }

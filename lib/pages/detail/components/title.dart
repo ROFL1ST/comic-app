@@ -85,7 +85,7 @@ class _TitleDetailState extends State<TitleDetail> {
                     ),
                   ),
                 );
-              }).toList()
+              })
             ],
           )
         ],

@@ -67,8 +67,11 @@ class _PopularSecState extends State<PopularSec> {
   }
 
   Widget card(data, size, index) {
-    log("${data}");
+    // log("${data}");
     List<String> stringList = data.genre.split(',');
+    int maxLength = 3; // Define the maximum length you want
+
+    // print(stringList.sublist(1, maxLength + 1));
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: SizedBox(
@@ -134,21 +137,37 @@ class _PopularSecState extends State<PopularSec> {
                       SizedBox(
                         height: size.height * 0.01,
                       ),
-                      Row(
-                        children: [
-                          Icon(
-                            Icons.star_rounded,
-                            color: Color(0xFFFFD248),
-                          ),
-                          SizedBox(
-                            width: size.width * 0.01,
-                          ),
-                          // rating tidak ada
-                        ],
+                      SizedBox(
+                        width: size.width * 0.5,
+                        child: Wrap(
+                          spacing: 5.0, // Horizontal spacing between children
+                          runSpacing: 5.0,
+                          children: [
+                            ...stringList.skip(1).take(5).map(
+                              (data) {
+                                return Container(
+                                  // margin: EdgeInsets.only(right: 8, bottom: 8),
+                                  decoration: BoxDecoration(
+                                      color: TextPrimary,
+                                      borderRadius: BorderRadius.circular(5)),
+                                  child: Padding(
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 10, vertical: 5),
+                                    child: Text(
+                                      data,
+                                      style: kListSubtitle.copyWith(
+                                          color: Colors.white, fontSize: 10),
+                                    ),
+                                  ),
+                                );
+                              },
+                            )
+                          ],
+                        ),
                       )
                     ],
                   ),
-                )
+                ),
               ],
             ),
           ],
